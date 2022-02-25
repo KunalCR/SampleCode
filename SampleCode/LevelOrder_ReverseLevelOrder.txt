@@ -1,0 +1,114 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Security.AccessControl;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp1
+{
+    internal class Test
+    {
+        public class Node
+        {
+            public int data;
+            public Node left;
+            public Node right;
+
+            public Node(int d)
+            {
+                data = d;
+            }
+        }
+
+        public static int Height(Node node)
+        {
+            if(node == null)
+            {
+                return 0;
+            }
+
+            return 1 + Math.Max(Height(node.left), Height(node.right));
+        }
+
+        public static void LevelOrderTraversal(Node node, int height)
+        {
+            for(int i=1; i<=height; i++)
+            {
+                PrintLevelOrder(node, i);
+            }
+        }
+
+        public static void PrintLevelOrder(Node node, int height)
+        {
+            if(node == null || height == 0)
+            {
+                return;
+            }
+            else if(height == 1)
+            {
+                Console.Write(node.data + " ");
+            }
+            else
+            {
+                PrintLevelOrder(node.left, height-1);
+                PrintLevelOrder(node.right, height-1);
+            }
+        }
+
+        static Queue<int> stack = new Queue<int>();
+
+        public static void ReverseLevelOrderTraversal(Node node, int height)
+        {
+            for (int i=height; i>0; i--)
+            {
+                GetReverseLevelOrderTraversal(node, i);
+                PrintReverseLevelOrderTraversal();
+            }
+        }
+
+        public static void GetReverseLevelOrderTraversal(Node node, int height)
+        {
+            if(node == null || height == 0)
+            {
+                return;
+            }
+            else if(height == 1)
+            {
+                stack.Enqueue(node.data);
+            }
+            else
+            {
+                GetReverseLevelOrderTraversal(node.left, height - 1);
+                GetReverseLevelOrderTraversal(node.right, height - 1);
+            }
+        }
+
+        public static void PrintReverseLevelOrderTraversal()
+        {
+            while(stack.Count > 0)
+            {
+                Console.Write(stack.Dequeue() + " ");
+            }
+        }
+
+        public static void Main(string[] args)
+        {
+            Node root = new Node(1);
+            root.left = new Node(2);
+            root.right = new Node(3);
+            root.left.left = new Node(4);
+            root.left.right = new Node(5);
+            root.right.left = new Node(6);
+            root.right.right = new Node(7);
+            int height = Height(root);
+            Console.WriteLine("Height of the tree : " + height);
+            Console.Write("Level Order Traversal : ");
+            LevelOrderTraversal(root, height);
+            Console.WriteLine();
+            Console.Write("Reverse Level Order Traversal : ");
+            ReverseLevelOrderTraversal(root, height);
+        }
+    }
+}
